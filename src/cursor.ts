@@ -336,7 +336,10 @@ export function moveVertically(view: EditorView, start: SelectionRange, forward:
   for (let extra = 0;; extra += 10) {
     let curY = startY + (dist + extra) * dir
     let pos = posAtCoords(view, {x: resolvedGoal, y: curY}, false, dir)!
-    if (curY < rect.top || curY > rect.bottom || (dir < 0 ? pos < startPos : pos > startPos)) {
+    if (curY < rect.top || curY > rect.bottom) {
+      return start // No movement possible, return original position
+    }
+    if (dir < 0 ? pos < startPos : pos > startPos) {
       let charRect = view.docView.coordsForChar(pos)
       let assoc = !charRect || curY < charRect.top ? -1 : 1
       return EditorSelection.cursor(pos, assoc, undefined, goal)
